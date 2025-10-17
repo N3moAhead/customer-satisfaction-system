@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>localhost:2509 Requester</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                margin: 2em;
+            }
+            #response-output {
+                margin-top: 20px;
+                padding: 15px;
+                border: 1px solid #ccc;
+                background-color: #f5f5f5;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                min-height: 50px;
+            }
+            button {
+                font-size: 1em;
+                padding: 10px 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Anfrage an localhost:2509 senden</h1>
+        <p>
+            Klicken Sie auf den Button, um eine GET-Anfrage an
+            <code>http://localhost:2509</code> zu senden.
+        </p>
+
+        <button id="send-request-btn">Anfrage senden</button>
+
+        <h2>Antwort vom Server:</h2>
+        <pre id="response-output">Antwort wird hier angezeigt...</pre>
+
+        <script>
+            // Wir holen uns die Referenzen auf unsere HTML-Elemente
+            const sendButton = document.getElementById("send-request-btn");
+            const outputElement = document.getElementById("response-output");
+
+            // Wir fügen einen Event-Listener hinzu, der auf einen Klick auf den Button wartet
+            sendButton.addEventListener("click", () => {
+                // Wenn der Button geklickt wird, führen wir die Funktion sendRequest aus
+                sendRequest();
+            });
+
+            // Diese Funktion sendet die eigentliche Anfrage
+            async function sendRequest() {
+                // Wir zeigen dem Benutzer, dass wir die Anfrage senden
+                outputElement.textContent = "Sende Anfrage...";
+
+                try {
+                    // Wir verwenden die fetch-API, um eine Anfrage an die URL zu senden.
+                    const response = await fetch("http://localhost:2509");
+
+                    // Wir prüfen, ob die Anfrage erfolgreich war (HTTP-Status 200-299)
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP Fehler! Status: ${response.status}`,
+                        );
+                    }
+
+                    // Wir lesen die Antwort als Text aus
+                    const data = await response.text();
+
+                    // Wir zeigen die Antwort im dafür vorgesehenen Element an
+                    outputElement.textContent = data;
+                } catch (error) {
+                    // Falls ein Fehler auftritt (z.B. Server nicht erreichbar), zeigen wir eine Fehlermeldung an
+                    console.error("Fehler bei der Anfrage:", error);
+                    outputElement.textContent =
+                        "Fehler bei der Anfrage:\n" +
+                        error.message +
+                        "\n\nStellen Sie sicher, dass der Server auf localhost:2509 läuft und Cross-Origin-Requests (CORS) erlaubt.";
+                }
+            }
+        </script>
+    </body>
+</html>
