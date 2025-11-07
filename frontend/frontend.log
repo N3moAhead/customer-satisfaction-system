@@ -1,0 +1,33 @@
+
+> template-dashboard-3@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.23
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1423ms
+ ○ Compiling /overview ...
+ ✓ Compiled /overview in 3.4s (4008 modules)
+ GET /overview 200 in 3863ms
+ ✓ Compiled in 586ms (4008 modules)
+ ✓ Compiled in 400ms (4008 modules)
+ ✓ Compiled in 379ms (4008 modules)
+ GET /overview 200 in 244ms
+ ✓ Compiled in 297ms (4008 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1038ms (3995 modules)
+ GET /overview 404 in 1311ms
+ GET /_next/static/css/app/layout.css?v=1762589214853 404 in 39ms
+ GET /_next/static/chunks/main-app.js?v=1762589214853 404 in 36ms
+ GET /_next/static/chunks/app/not-found.js 404 in 36ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 37ms
+ GET /_next/static/chunks/app/layout.js 404 in 36ms
+ GET /overview 200 in 152ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 35ms
+ GET /_next/static/css/app/layout.css?v=1762589216466 404 in 37ms
+ GET /_next/static/chunks/app/layout.js 404 in 36ms
+ GET /_next/static/chunks/main-app.js?v=1762589216466 404 in 37ms
+ GET /_next/static/chunks/app/(main)/overview/page.js 404 in 36ms
+ GET /_next/static/chunks/app/not-found.js 404 in 35ms
+[?25h

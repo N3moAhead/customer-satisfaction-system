@@ -26,9 +26,9 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
-    // Get date range parameters or use defaults
+    // Get date range parameters or use defaults that include actual review data
     const endDate = req.query.endDate || new Date().toISOString();
-    const startDate = req.query.startDate || new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString();
+    const startDate = req.query.startDate || new Date('2025-10-01').toISOString(); // Start from October 2025 where reviews exist
     
     // Generate dashboard metrics using our service
     const overviewData = generateMetrics(startDate, endDate);

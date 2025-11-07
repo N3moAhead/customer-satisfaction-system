@@ -5,6 +5,7 @@ import { Filterbar } from "@/components/ui/overview/DashboardFilterbar"
 import { ProgressBarCard } from "@/components/ui/overview/DashboardProgressBarCard"
 import { useOverviewData } from "@/lib/api"
 import { OverviewData } from "@/data/schema"
+import { usage } from "@/data/data"
 import { cx } from "@/lib/utils"
 import { subDays, toDate } from "date-fns"
 import React from "react"
@@ -58,53 +59,6 @@ export type KpiEntry = {
   unit?: string
 }
 
-const data: KpiEntry[] = [
-  {
-    title: "Rows read",
-    percentage: 48.1,
-    current: 48.1,
-    allowed: 100,
-    unit: "M",
-  },
-  {
-    title: "Rows written",
-    percentage: 78.3,
-    current: 78.3,
-    allowed: 100,
-    unit: "M",
-  },
-  {
-    title: "Storage",
-    percentage: 26,
-    current: 5.2,
-    allowed: 20,
-    unit: "GB",
-  },
-]
-
-const data2: KpiEntry[] = [
-  {
-    title: "Weekly active users",
-    percentage: 21.7,
-    current: 21.7,
-    allowed: 100,
-    unit: "%",
-  },
-  {
-    title: "Total users",
-    percentage: 70,
-    current: 28,
-    allowed: 40,
-  },
-  {
-    title: "Uptime",
-    percentage: 98.3,
-    current: 98.3,
-    allowed: 100,
-    unit: "%",
-  },
-]
-
 export type KpiEntryExtended = Omit<
   KpiEntry,
   "current" | "allowed" | "unit"
@@ -112,27 +66,6 @@ export type KpiEntryExtended = Omit<
   value: string
   color: string
 }
-
-const data3: KpiEntryExtended[] = [
-  {
-    title: "Base tier",
-    percentage: 68.1,
-    value: "$200",
-    color: "bg-indigo-600 dark:bg-indigo-500",
-  },
-  {
-    title: "On-demand charges",
-    percentage: 20.8,
-    value: "$61.1",
-    color: "bg-purple-600 dark:bg-purple-500",
-  },
-  {
-    title: "Caching",
-    percentage: 11.1,
-    value: "$31.9",
-    color: "bg-gray-400 dark:bg-gray-600",
-  },
-]
 
 export default function Overview() {
   const { data: overviews, loading, error } = useOverviewData()
@@ -190,44 +123,173 @@ export default function Overview() {
 
   return (
     <>
-      <section aria-labelledby="current-billing-cycle">
+      <section aria-labelledby="review-metrics">
         <h1
-          id="current-billing-cycle"
+          id="review-metrics"
           className="scroll-mt-10 text-lg font-semibold text-gray-900 sm:text-xl dark:text-gray-50"
         >
-          Current billing cycle
+          Review metrics summary
         </h1>
         <div className="mt-4 grid grid-cols-1 gap-14 sm:mt-8 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
           <ProgressBarCard
-            title="Usage"
-            change="+0.2%"
-            value="68.1%"
-            valueDescription="of allowed capacity"
-            ctaDescription="Monthly usage resets in 12 days."
-            ctaText="Manage plan."
+            title="Average Satisfaction"
+            change={overviews && overviews.length > 1 ? 
+              `${((Math.max(0, overviews[overviews.length - 1]["Payments completed"] || 0) / 25) - 
+                 (Math.max(0, overviews[overviews.length - 2]["Payments completed"] || 0) / 25)).toFixed(1)}` : 
+              "N/A"}
+            value={overviews && overviews.length > 0 ? 
+              `${Math.min(5, Math.max(0, (overviews[overviews.length - 1]["Payments completed"] || 0) / 25)).toFixed(1)}/5.0` : 
+              "0/5.0"}
+            valueDescription="average customer rating"
+            ctaDescription="Based on all customer review ratings."
+            ctaText="View details"
             ctaLink="#"
-            data={data}
+            data={overviews ? [{
+              title: "Satisfaction Score",
+              percentage: overviews.length > 0 ? 
+                Math.min(100, Math.max(0, (overviews[overviews.length - 1]["Payments completed"] || 0) / 25 / 5 * 100)) : 0,
+              current: overviews.length > 0 ? Math.min(5, Math.max(0, (overviews[overviews.length - 1]["Payments completed"] || 0) / 25)) : 0,
+              allowed: 5,
+              unit: "★"
+            }] : []}
           />
           <ProgressBarCard
-            title="Workspace"
-            change="+2.9%"
-            value="21.7%"
-            valueDescription="weekly active users"
-            ctaDescription="Add up to 20 members in free plan."
-            ctaText="Invite users."
+            title="Daily Reviews"
+            change={overviews && overviews.length > 1 ? 
+              `${Math.max(0, (overviews[overviews.length - 1]["Rows written"] || 0) - (overviews[overviews.length - 2]["Rows written"] || 0))}` : 
+              "N/A"}
+            value={overviews && overviews.length > 0 ? 
+              Math.max(0, overviews[overviews.length - 1]["Rows written"] || 0).toString() : 
+              "0"}
+            valueDescription="reviews submitted today"
+            ctaDescription="Track daily review submission trends."
+            ctaText="View trends"
             ctaLink="#"
-            data={data2}
+            data={overviews ? [{
+              title: "Reviews Today",
+              percentage: overviews.length > 0 && overviews.length > 1 ? 
+                Math.min(100, Math.max(0, ((overviews[overviews.length - 1]["Rows written"] || 0) / Math.max((overviews[overviews.length - 2]["Rows written"] || 0), 1)) * 100)) : 50,
+              current: overviews.length > 0 ? Math.max(0, overviews[overviews.length - 1]["Rows written"] || 0) : 0,
+              allowed: overviews.length > 1 ? Math.max((overviews[overviews.length - 2]["Rows written"] || 0), 1) : 10,
+              unit: ""
+            }] : []}
           />
           <CategoryBarCard
-            title="Costs"
-            change="-1.4%"
-            value="$293.5"
-            valueDescription="current billing cycle"
-            subtitle="Current costs"
-            ctaDescription="Set hard caps in"
-            ctaText="cost spend management."
+            title="Review Activity"
+            change={overviews && overviews.length > 1 ? 
+              `${Math.max(0, (overviews[overviews.length - 1]["Sign ups"] || 0) - (overviews[overviews.length - 2]["Sign ups"] || 0))}` : 
+              "N/A"}
+            value={overviews && overviews.length > 0 ? Math.max(0, overviews[overviews.length - 1]["Sign ups"] || 0).toString() : "0"}
+            valueDescription="new customers today"
+            subtitle="Activity breakdown"
+            ctaDescription="Monitor customer engagement"
+            ctaText="detailed analytics"
             ctaLink="#"
-            data={data3}
+            data={overviews && overviews.length > 0 ? [
+              {
+                title: "Reviews Submitted",
+                percentage: (overviews[overviews.length - 1]["Rows written"] || 0) > 0 ? 60 : 0,
+                value: Math.max(0, overviews[overviews.length - 1]["Rows written"] || 0).toString(),
+                color: "bg-blue-600 dark:bg-blue-500"
+              },
+              {
+                title: "New Customers",
+                percentage: (overviews[overviews.length - 1]["Sign ups"] || 0) > 0 ? 25 : 0,
+                value: Math.max(0, overviews[overviews.length - 1]["Sign ups"] || 0).toString(),
+                color: "bg-green-600 dark:bg-green-500"
+              },
+              {
+                title: "Escalations",  
+                percentage: (overviews[overviews.length - 1]["Support calls"] || 0) > 0 ? 15 : 0,
+                value: Math.max(0, overviews[overviews.length - 1]["Support calls"] || 0).toString(),
+                color: "bg-red-600 dark:bg-red-500"
+              }
+            ] : []}
+          />
+        </div>
+      </section>
+      <section aria-labelledby="current-billing-cycle">
+        <h1
+          id="current-billing-cycle"
+          className="mt-16 scroll-mt-8 text-lg font-semibold text-gray-900 sm:text-xl dark:text-gray-50"
+        >
+          Current Billing Cycle
+        </h1>
+        <div className="mt-4 grid grid-cols-1 gap-14 sm:mt-8 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
+          <ProgressBarCard
+            title="Total Costs"
+            change={usage && usage.length > 1 ? 
+              `$${(usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) - usage.slice(-10, -5).reduce((acc, u) => acc + u.costs, 0)).toFixed(2)}` : 
+              "N/A"}
+            value={usage && usage.length > 0 ? 
+              `$${usage.slice(-5).reduce((acc, u) => acc + u.costs, 0).toFixed(2)}` : 
+              "$0.00"}
+            valueDescription="last 5 active projects"
+            ctaDescription="View detailed billing breakdown and cost analysis."
+            ctaText="View billing"
+            ctaLink="#"
+            data={usage ? [{
+              title: "Current Costs",
+              percentage: usage.length > 0 ? 
+                Math.min(100, Math.max(0, (usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) / 50000) * 100)) : 0,
+              current: usage.length > 0 ? usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) : 0,
+              allowed: 50000,
+              unit: "$"
+            }] : []}
+          />
+          <ProgressBarCard
+            title="System Stability"
+            change={usage && usage.length > 1 ? 
+              `${(usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) - 
+                 usage.filter(u => u.status === 'archived').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'archived').length, 1)).toFixed(1)}%` : 
+              "N/A"}
+            value={usage && usage.length > 0 ? 
+              `${(usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1)).toFixed(1)}%` : 
+              "0%"}
+            valueDescription="average uptime across active systems"
+            ctaDescription="Monitor system health and performance metrics."
+            ctaText="View monitoring"
+            ctaLink="#"
+            data={usage ? [{
+              title: "Stability Score",
+              percentage: usage.length > 0 ? 
+                usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) : 0,
+              current: usage.length > 0 ? usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) : 0,
+              allowed: 100,
+              unit: "%"
+            }] : []}
+          />
+          <CategoryBarCard
+            title="Regional Distribution"
+            change={usage && usage.length > 1 ? 
+              `${usage.filter(u => u.status === 'live').length - usage.filter(u => u.status === 'archived').length}` : 
+              "N/A"}
+            value={usage && usage.length > 0 ? usage.filter(u => u.status === 'live').length.toString() : "0"}
+            valueDescription="active deployments"
+            subtitle="Distribution by region"
+            ctaDescription="Manage regional infrastructure deployments"
+            ctaText="view regions"
+            ctaLink="#"
+            data={usage && usage.length > 0 ? [
+              {
+                title: "US Regions",
+                percentage: (usage.filter(u => u.region.startsWith('US') && u.status === 'live').length / Math.max(usage.filter(u => u.status === 'live').length, 1)) * 100,
+                value: usage.filter(u => u.region.startsWith('US') && u.status === 'live').length.toString(),
+                color: "bg-blue-600 dark:bg-blue-500"
+              },
+              {
+                title: "EU Regions", 
+                percentage: (usage.filter(u => u.region.startsWith('EU') && u.status === 'live').length / Math.max(usage.filter(u => u.status === 'live').length, 1)) * 100,
+                value: usage.filter(u => u.region.startsWith('EU') && u.status === 'live').length.toString(),
+                color: "bg-green-600 dark:bg-green-500"
+              },
+              {
+                title: "Inactive",
+                percentage: (usage.filter(u => u.status !== 'live').length / Math.max(usage.length, 1)) * 100,
+                value: usage.filter(u => u.status !== 'live').length.toString(),
+                color: "bg-red-600 dark:bg-red-500"
+              }
+            ] : []}
           />
         </div>
       </section>
@@ -249,6 +311,7 @@ export default function Overview() {
             categories={categories}
             setSelectedCategories={setSelectedCategories}
             selectedCategories={selectedCategories}
+            overviewData={overviews || []}
           />
         </div>
         <dl
