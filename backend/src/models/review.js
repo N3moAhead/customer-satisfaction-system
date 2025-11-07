@@ -1,16 +1,16 @@
 /**
  * Review data model and validation functions
  * 
- * Review schema:
- * - id: unique identifier (string)
- * - customerId: customer identifier (string)
- * - customerName: customer's name (string)
- * - rating: review rating from 1-5 (number)
- * - title: review title (string)
- * - comment: review text (string)
- * - createdAt: creation timestamp (ISO string)
- * - updatedAt: last update timestamp (ISO string)
- * - status: review status - 'pending', 'approved', 'rejected' (string)
+ * Review schema (matches SQLite database schema):
+ * - id: unique identifier (string, PRIMARY KEY)
+ * - customerId: customer identifier (string, NOT NULL)
+ * - customerName: customer's name (string, NOT NULL)
+ * - rating: review rating from 1-5 (number, CHECK constraint)
+ * - title: review title (string, NOT NULL)
+ * - comment: review text (string, NOT NULL)
+ * - createdAt: creation timestamp (ISO string, NOT NULL)
+ * - updatedAt: last update timestamp (ISO string, NOT NULL)
+ * - status: review status - 'pending', 'approved', 'rejected' (string, CHECK constraint)
  */
 
 import { v4 as uuidv4 } from 'uuid';

@@ -3,7 +3,7 @@ import { CategoryBarCard } from "@/components/ui/overview/DashboardCategoryBarCa
 import { ChartCard } from "@/components/ui/overview/DashboardChartCard"
 import { Filterbar } from "@/components/ui/overview/DashboardFilterbar"
 import { ProgressBarCard } from "@/components/ui/overview/DashboardProgressBarCard"
-import { overviews } from "@/data/overview-data"
+import { useOverviewData } from "@/lib/api"
 import { OverviewData } from "@/data/schema"
 import { cx } from "@/lib/utils"
 import { subDays, toDate } from "date-fns"
@@ -134,10 +134,13 @@ const data3: KpiEntryExtended[] = [
   },
 ]
 
-const overviewsDates = overviews.map((item) => toDate(item.date).getTime())
-const maxDate = toDate(Math.max(...overviewsDates))
-
 export default function Overview() {
+  const { data: overviews, loading, error } = useOverviewData()
+  
+  // Calculate max date from API data, fallback to current date
+  const overviewsDates = overviews.map((item) => toDate(item.date).getTime())
+  const maxDate = overviewsDates.length > 0 ? toDate(Math.max(...overviewsDates)) : new Date()
+  
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
   >({
@@ -150,6 +153,40 @@ export default function Overview() {
   const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
     categories.map((category) => category.title),
   )
+  
+  // Update selected dates when data loads
+  React.useEffect(() => {
+    if (overviews.length > 0) {
+      const dates = overviews.map((item) => toDate(item.date).getTime())
+      const newMaxDate = toDate(Math.max(...dates))
+      setSelectedDates({
+        from: subDays(newMaxDate, 30),
+        to: newMaxDate,
+      })
+    }
+  }, [overviews])
+  
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg text-gray-600 dark:text-gray-400">
+          Loading dashboard data...
+        </div>
+      </div>
+    )
+  }
+  
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-lg text-red-600 dark:text-red-400">
+          Error loading data: {error.message}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -229,6 +266,7 @@ export default function Overview() {
                   type={category.type}
                   selectedDates={selectedDates}
                   selectedPeriod={selectedPeriod}
+                  overviewData={overviews}
                 />
               )
             })}

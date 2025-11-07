@@ -222,7 +222,7 @@ async function runAllTests() {
   
   try {
     // Test server is running
-    const healthResponse = await makeRequest('/../');
+    const healthResponse = await makeRequest('/reviews');
     if (healthResponse.status !== 200) {
       throw new Error('Server is not running. Please start the server first with: npm start');
     }
