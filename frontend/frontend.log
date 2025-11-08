@@ -6,28 +6,74 @@
   - Local:        http://localhost:3000
 
  ✓ Starting...
- ✓ Ready in 1423ms
+ ✓ Ready in 1350ms
  ○ Compiling /overview ...
- ✓ Compiled /overview in 3.4s (4008 modules)
- GET /overview 200 in 3863ms
- ✓ Compiled in 586ms (4008 modules)
- ✓ Compiled in 400ms (4008 modules)
- ✓ Compiled in 379ms (4008 modules)
- GET /overview 200 in 244ms
- ✓ Compiled in 297ms (4008 modules)
- ○ Compiling /_not-found ...
- ✓ Compiled /_not-found in 1038ms (3995 modules)
- GET /overview 404 in 1311ms
- GET /_next/static/css/app/layout.css?v=1762589214853 404 in 39ms
- GET /_next/static/chunks/main-app.js?v=1762589214853 404 in 36ms
- GET /_next/static/chunks/app/not-found.js 404 in 36ms
- GET /_next/static/chunks/app-pages-internals.js 404 in 37ms
- GET /_next/static/chunks/app/layout.js 404 in 36ms
- GET /overview 200 in 152ms
- GET /_next/static/chunks/app-pages-internals.js 404 in 35ms
- GET /_next/static/css/app/layout.css?v=1762589216466 404 in 37ms
- GET /_next/static/chunks/app/layout.js 404 in 36ms
- GET /_next/static/chunks/main-app.js?v=1762589216466 404 in 37ms
- GET /_next/static/chunks/app/(main)/overview/page.js 404 in 36ms
- GET /_next/static/chunks/app/not-found.js 404 in 35ms
+ ✓ Compiled /overview in 4.9s (4019 modules)
+ GET /overview 200 in 5238ms
+ ⨯ ./src/components/LineChart.tsx
+Error: 
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:466:1]
+ [2m466[0m |       </div>
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+     : [31;1m  ^^^^^^^^^^^[0m
+ [2m470[0m | }
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:467:1]
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+ [2m470[0m | }
+     : [31;1m^[0m
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/LineChart.tsx
+./src/components/ui/overview/DashboardChartCard.tsx
+./src/app/(main)/overview/page.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/components/LineChart.tsx
+Error: 
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:466:1]
+ [2m466[0m |       </div>
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+     : [31;1m  ^^^^^^^^^^^[0m
+ [2m470[0m | }
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:467:1]
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+ [2m470[0m | }
+     : [31;1m^[0m
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/LineChart.tsx
+./src/components/ui/overview/DashboardChartCard.tsx
+./src/app/(main)/overview/page.tsx
+ HEAD /overview 500 in 1039ms
 [?25h
