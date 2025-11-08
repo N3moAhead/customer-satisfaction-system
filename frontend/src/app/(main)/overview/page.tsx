@@ -1,5 +1,6 @@
 "use client"
 
+import { CategoryBarCard } from "@/components/ui/overview/DashboardCategoryBarCard"
 import { ChartCard } from "@/components/ui/overview/DashboardChartCard"
 import { DonutCard } from "@/components/ui/overview/DonutCard"
 import { Filterbar } from "@/components/ui/overview/DashboardFilterbar"
@@ -266,7 +267,7 @@ export default function Overview() {
                 : []
             }
           />
-          <DonutCard
+          <CategoryBarCard
             title="Review Activity"
             change={
               overviews && overviews.length > 1
@@ -290,32 +291,117 @@ export default function Overview() {
               overviews && overviews.length > 0
                 ? [
                     {
-                      name: "Reviews Submitted",
+                      title: "Reviews Submitted",
+                      percentage: (overviews[overviews.length - 1]["Rows written"] || 0) > 0 ? 60 : 0,
                       value: Math.max(
                         0,
                         overviews[overviews.length - 1]["Rows written"] || 0,
-                      ),
-                      color: "blue",
+                      ).toString(),
+                      color: "bg-blue-600 dark:bg-blue-500",
                     },
                     {
-                      name: "New Customers",
+                      title: "New Customers",
+                      percentage: (overviews[overviews.length - 1]["Sign ups"] || 0) > 0 ? 25 : 0,
                       value: Math.max(
                         0,
                         overviews[overviews.length - 1]["Sign ups"] || 0,
-                      ),
-                      color: "green",
+                      ).toString(),
+                      color: "bg-green-600 dark:bg-green-500",
                     },
                     {
-                      name: "Escalations",
+                      title: "Escalations",
+                      percentage: (overviews[overviews.length - 1]["Support calls"] || 0) > 0 ? 15 : 0,
                       value: Math.max(
                         0,
                         overviews[overviews.length - 1]["Support calls"] || 0,
-                      ),
-                      color: "red",
+                      ).toString(),
+                      color: "bg-red-600 dark:bg-red-500",
                     },
                   ]
                 : []
             }
+          />
+        </div>
+      </section>
+      <section aria-labelledby="current-billing-cycle">
+        <h1
+          id="current-billing-cycle"
+          className="mt-16 scroll-mt-8 text-lg font-semibold text-gray-900 sm:text-xl dark:text-gray-50"
+        >
+          Current Billing Cycle
+        </h1>
+        <div className="mt-4 grid grid-cols-1 gap-14 sm:mt-8 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
+          <ProgressBarCard
+            title="Total Costs"
+            change={usage && usage.length > 1 ? 
+              `$${(usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) - usage.slice(-10, -5).reduce((acc, u) => acc + u.costs, 0)).toFixed(2)}` : 
+              "N/A"}
+            value={usage && usage.length > 0 ? 
+              `$${usage.slice(-5).reduce((acc, u) => acc + u.costs, 0).toFixed(2)}` : 
+              "$0.00"}
+            valueDescription="last 5 active projects"
+            ctaDescription="View detailed billing breakdown and cost analysis."
+            ctaText="View billing"
+            ctaLink="#"
+            data={usage ? [{
+              title: "Current Costs",
+              percentage: usage.length > 0 ? 
+                Math.min(100, Math.max(0, (usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) / 50000) * 100)) : 0,
+              current: usage.length > 0 ? usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) : 0,
+              allowed: 50000,
+              unit: "$"
+            }] : []}
+          />
+          <ProgressBarCard
+            title="System Stability"
+            change={usage && usage.length > 1 ? 
+              `${(usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) - 
+                 usage.filter(u => u.status === 'archived').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'archived').length, 1)).toFixed(1)}%` : 
+              "N/A"}
+            value={usage && usage.length > 0 ? 
+              `${(usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1)).toFixed(1)}%` : 
+              "0%"}
+            valueDescription="average uptime across active systems"
+            ctaDescription="Monitor system health and performance metrics."
+            ctaText="View monitoring"
+            ctaLink="#"
+            data={usage ? [{
+              title: "Stability Score",
+              percentage: usage.length > 0 ? 
+                usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) : 0,
+              current: usage.length > 0 ? usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) : 0,
+              allowed: 100,
+              unit: "%"
+            }] : []}
+          />
+          <DonutCard
+            title="Regional Distribution"
+            change={usage && usage.length > 1 ? 
+              `${usage.filter(u => u.status === 'live').length - usage.filter(u => u.status === 'archived').length}` : 
+              "N/A"}
+            value={usage && usage.length > 0 ? usage.filter(u => u.status === 'live').length.toString() : "0"}
+            valueDescription="active deployments"
+            subtitle="Distribution by region"
+            ctaDescription="Manage regional infrastructure deployments"
+            ctaText="view regions"
+            ctaLink="#"
+            data={usage && usage.length > 0 ? [
+              {
+                name: "US Regions",
+                value: usage.filter(u => u.region.startsWith('US') && u.status === 'live').length,
+                color: "blue"
+              },
+              {
+                name: "EU Regions", 
+                value: usage.filter(u => u.region.startsWith('EU') && u.status === 'live').length,
+                color: "green"
+              },
+              {
+                name: "Inactive",
+                value: usage.filter(u => u.status !== 'live').length,
+                color: "red"
+              }
+            ] : []}
           />
         </div>
       </section>
