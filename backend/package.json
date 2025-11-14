@@ -7,6 +7,8 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "node src/tests/apiTests.js",
+    "test:export": "node src/tests/exportTests.js",
+    "test:all": "node src/tests/apiTests.js && node src/tests/exportTests.js",
     "dev": "node --watch src/index.js",
     "seed": "node src/data/runSeed.js",
     "clear-data": "node -e \"import('./src/data/seedData.js').then(m => m.clearReviews());\""
