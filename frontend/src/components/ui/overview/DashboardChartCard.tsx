@@ -1,7 +1,6 @@
 import { PeriodValue } from "@/app/(main)/overview/page"
 import { Badge } from "@/components/Badge"
 import { LineChart } from "@/components/LineChart"
-import { overviews } from "@/data/overview-data"
 import { OverviewData } from "@/data/schema"
 import { cx, formatters, percentageFormatter } from "@/lib/utils"
 import {
@@ -18,6 +17,7 @@ export type CardProps = {
   type: "currency" | "unit"
   selectedDates: DateRange | undefined
   selectedPeriod: PeriodValue
+  overviewData: OverviewData[]
   isThumbnail?: boolean
 }
 
@@ -44,6 +44,7 @@ export function ChartCard({
   type,
   selectedDates,
   selectedPeriod,
+  overviewData,
   isThumbnail,
 }: CardProps) {
   const formatter = formattingMap[type]
@@ -62,7 +63,7 @@ export function ChartCard({
       ? interval(prevDates.from, prevDates.to)
       : null
 
-  const data = overviews
+  const data = overviewData
     .filter((overview) => {
       if (selectedDatesInterval) {
         return isWithinInterval(overview.date, selectedDatesInterval)
@@ -71,7 +72,7 @@ export function ChartCard({
     })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
-  const prevData = overviews
+  const prevData = overviewData
     .filter((overview) => {
       if (prevDatesInterval) {
         return isWithinInterval(overview.date, prevDatesInterval)

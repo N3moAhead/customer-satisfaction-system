@@ -1,0 +1,79 @@
+
+> template-dashboard-3@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.23
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1350ms
+ ○ Compiling /overview ...
+ ✓ Compiled /overview in 4.9s (4019 modules)
+ GET /overview 200 in 5238ms
+ ⨯ ./src/components/LineChart.tsx
+Error: 
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:466:1]
+ [2m466[0m |       </div>
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+     : [31;1m  ^^^^^^^^^^^[0m
+ [2m470[0m | }
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:467:1]
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+ [2m470[0m | }
+     : [31;1m^[0m
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/LineChart.tsx
+./src/components/ui/overview/DashboardChartCard.tsx
+./src/app/(main)/overview/page.tsx
+ ○ Compiling /_error ...
+ ⨯ ./src/components/LineChart.tsx
+Error: 
+  [31mx[0m Return statement is not allowed here
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:466:1]
+ [2m466[0m |       </div>
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+     : [31;1m  ^^^^^^^^^^^[0m
+ [2m470[0m | }
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+  [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/luca.scherzer/Coding/customer-satisfaction-system/frontend/src/components/LineChart.tsx[0m:467:1]
+ [2m467[0m |     )
+ [2m468[0m |   }
+ [2m469[0m |   return null
+ [2m470[0m | }
+     : [31;1m^[0m
+ [2m471[0m | 
+ [2m472[0m | //#region LineChart
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/components/LineChart.tsx
+./src/components/ui/overview/DashboardChartCard.tsx
+./src/app/(main)/overview/page.tsx
+ HEAD /overview 500 in 1039ms
+[?25h

@@ -1,0 +1,57 @@
+[
+  {
+    "id": "13a1cb11-f8ac-4a45-b231-c0b3f2c07cf1",
+    "customerId": "cust_123",
+    "customerName": "John Doe",
+    "rating": 5,
+    "title": "Great service!",
+    "comment": "I was very satisfied with the product.",
+    "status": "pending",
+    "createdAt": "2025-11-07T13:51:49.602Z",
+    "updatedAt": "2025-11-07T13:51:49.602Z"
+  },
+  {
+    "id": "a441109b-6e24-4d92-a2ad-f26e8468688a",
+    "customerId": "cust_001",
+    "customerName": "Alice Johnson",
+    "rating": 5,
+    "title": "Outstanding service!",
+    "comment": "The product quality exceeded my expectations and the customer service was excellent.",
+    "status": "pending",
+    "createdAt": "2025-11-07T14:27:53.920Z",
+    "updatedAt": "2025-11-07T14:27:53.920Z"
+  },
+  {
+    "id": "47e232b7-7c50-4244-b447-76ac270c73c1",
+    "customerId": "cust_002",
+    "customerName": "Bob Smith",
+    "rating": 4,
+    "title": "Good experience",
+    "comment": "Overall satisfied with the purchase. Fast delivery and good packaging.",
+    "status": "pending",
+    "createdAt": "2025-11-07T14:27:54.047Z",
+    "updatedAt": "2025-11-07T14:27:54.047Z"
+  },
+  {
+    "id": "04112999-e506-4ef5-abdb-67ed9210fe71",
+    "customerId": "cust_003",
+    "customerName": "Carol Davis",
+    "rating": 3,
+    "title": "Average product",
+    "comment": "The product is okay but could be improved. Customer service was helpful though.",
+    "status": "approved",
+    "createdAt": "2025-11-07T14:27:54.060Z",
+    "updatedAt": "2025-11-07T14:27:54.125Z"
+  },
+  {
+    "id": "b465e633-7d5a-4e14-8c0c-ce9bae794874",
+    "customerId": "cust_123",
+    "customerName": "John Doe",
+    "rating": 5,
+    "title": "Excellent service!",
+    "comment": "Very satisfied with the product quality.",
+    "status": "pending",
+    "createdAt": "2025-11-07T14:38:08.372Z",
+    "updatedAt": "2025-11-07T14:38:08.372Z"
+  }
+]

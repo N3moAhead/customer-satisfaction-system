@@ -25,6 +25,7 @@ import { PeriodValue } from "@/app/(main)/overview/page"
 import { Button } from "@/components/Button"
 import { Checkbox } from "@/components/Checkbox"
 import { DateRangePicker } from "@/components/DatePicker"
+import { OverviewData } from "@/data/schema"
 import { cx } from "@/lib/utils"
 import { RiSettings5Line } from "@remixicon/react"
 import { eachDayOfInterval, interval, subDays, subYears } from "date-fns"
@@ -95,6 +96,7 @@ type FilterbarProps = {
   categories: any[]
   setSelectedCategories: any
   selectedCategories: any
+  overviewData: OverviewData[]
 }
 
 export function Filterbar({
@@ -107,6 +109,7 @@ export function Filterbar({
   categories,
   setSelectedCategories,
   selectedCategories,
+  overviewData,
 }: FilterbarProps) {
   const [tempSelectedCategories, setTempSelectedCategories] =
     React.useState(selectedCategories)
@@ -203,6 +206,7 @@ export function Filterbar({
                       type={category.type}
                       selectedDates={selectedDates}
                       selectedPeriod={selectedPeriod}
+                      overviewData={overviewData}
                       isThumbnail={true}
                     />
                   </div>

@@ -398,14 +398,21 @@ const OverviewChartTooltip = ({
   categoryColors,
   valueFormatter,
 }: ChartTooltipProps) => {
-  if (active && payload) {
-    const filteredPayload = payload.filter((item: any) => item.type !== "none")
-
-    if (!active || !payload) return null
-
-    const title = payload[0].payload.title
-    const evolution = payload[0].payload.evolution
-    if (!title) return null
+  if (!active || !payload || payload.length === 0) return null
+  
+  const filteredPayload = payload.filter((item: any) => item.type !== "none")
+  
+  if (!filteredPayload || filteredPayload.length === 0) return null
+  
+  // Check if we have valid payload data
+  const firstPayload = filteredPayload[0]
+  if (!firstPayload || !firstPayload.payload) return null
+  
+  const title = firstPayload.payload.title
+  const evolution = firstPayload.payload.evolution
+  
+  // Only show tooltip if we have meaningful data
+  if (!title) return null
 
     return (
       <div
@@ -437,7 +444,8 @@ const OverviewChartTooltip = ({
         </div>
         <div className={cx("space-y-1 p-2")}>
           {filteredPayload.map((payload: any, index: number) => {
-            const payloadData = payload.payload
+            const payloadData = payload?.payload
+            if (!payloadData) return null
             return (
               <ChartTooltipRow
                 key={`id-${index}`}
@@ -457,8 +465,6 @@ const OverviewChartTooltip = ({
         </div>
       </div>
     )
-  }
-  return null
 }
 
 //#region LineChart
