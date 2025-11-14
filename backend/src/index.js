@@ -40,7 +40,14 @@ app.get("/", (req, res) => {
       <li><strong>PUT /api/reviews/:id</strong> - Update review</li>
       <li><strong>DELETE /api/reviews/:id</strong> - Delete review</li>
     </ul>
-    <h3>Export</h3>
+    <h3>Database Export (Data Warehouse)</h3>
+    <ul>
+      <li><strong>GET /api/export</strong> - Export entire database (respects Accept header)</li>
+      <li>- Accept: application/json → JSON format</li>
+      <li>- Accept: text/csv → CSV format</li>
+      <li>- Accept: application/xml → XML format</li>
+    </ul>
+    <h3>Legacy Export Endpoints</h3>
     <ul>
       <li><strong>GET /api/export/csv</strong> - Export reviews as CSV</li>
       <li><strong>GET /api/export/json</strong> - Export reviews as JSON</li>
