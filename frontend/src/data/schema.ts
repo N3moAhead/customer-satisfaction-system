@@ -18,3 +18,15 @@ export type OverviewData = {
   "Sign outs": number
   "Support calls": number
 }
+
+export type ReviewTimeseriesMetrics = {
+  date: string
+  "Reviews submitted": number
+  "Reviews approved": number
+  "Reviews pending": number
+  "Reviews rejected": number
+  "Average rating": number
+  "5-star reviews": number
+  "Customer interactions": number
+  "Support escalations": number
+}
