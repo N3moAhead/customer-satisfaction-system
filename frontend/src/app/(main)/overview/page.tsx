@@ -2,12 +2,10 @@
 
 import { CategoryBarCard } from "@/components/ui/overview/DashboardCategoryBarCard"
 import { ChartCard } from "@/components/ui/overview/DashboardChartCard"
-import { DonutCard } from "@/components/ui/overview/DonutCard"
 import { Filterbar } from "@/components/ui/overview/DashboardFilterbar"
 import { ProgressBarCard } from "@/components/ui/overview/DashboardProgressBarCard"
-import { useOverviewData } from "@/lib/api"
-import { OverviewData } from "@/data/schema"
-import { usage } from "@/data/data"
+import { useReviewMetricsData } from "@/lib/api"
+import { ReviewTimeseriesMetrics } from "@/data/schema"
 import { cx } from "@/lib/utils"
 import { subDays, toDate } from "date-fns"
 import React from "react"
@@ -16,66 +14,50 @@ import { DateRange } from "react-day-picker"
 export type PeriodValue = "previous-period" | "last-year" | "no-comparison"
 
 const categories: {
-  title: keyof OverviewData
-  type: "currency" | "unit"
+  title: keyof Omit<ReviewTimeseriesMetrics, "data">
+  type: "unit" | "rating"
 }[] = [
   {
-    title: "Rows read",
+    title: "Reviews submitted",
     type: "unit",
   },
   {
-    title: "Rows written",
+    title: "Reviews approved",
     type: "unit",
   },
   {
-    title: "Queries",
+    title: "Reviews pending",
     type: "unit",
   },
   {
-    title: "Payments completed",
-    type: "currency",
-  },
-  {
-    title: "Sign ups",
+    title: "Reviews rejected",
     type: "unit",
   },
   {
-    title: "Logins",
+    title: "Average rating",
+    type: "rating",
+  },
+  {
+    title: "5-star reviews",
     type: "unit",
   },
   {
-    title: "Sign outs",
+    title: "Customer interactions",
     type: "unit",
   },
   {
-    title: "Support calls",
+    title: "Support escalations",
     type: "unit",
   },
 ]
 
-export type KpiEntry = {
-  title: string
-  percentage: number
-  current: number
-  allowed: number
-  unit?: string
-}
-
-export type KpiEntryExtended = Omit<
-  KpiEntry,
-  "current" | "allowed" | "unit"
-> & {
-  value: string
-  color: string
-}
-
-export default function Overview() {
-  const { data: overviews, loading, error } = useOverviewData()
+export default function OverviewPage() {
+  const { data: reviews, loading, error } = useReviewMetricsData()
 
   // Calculate max date from API data, fallback to current date
-  const overviewsDates = overviews.map((item) => toDate(item.date).getTime())
+  const reviewsDates = reviews.map((item) => new Date(item.date).getTime())
   const maxDate =
-    overviewsDates.length > 0 ? toDate(Math.max(...overviewsDates)) : new Date()
+    reviewsDates.length > 0 ? new Date(Math.max(...reviewsDates)) : new Date()
 
   const [selectedDates, setSelectedDates] = React.useState<
     DateRange | undefined
@@ -92,15 +74,15 @@ export default function Overview() {
 
   // Update selected dates when data loads
   React.useEffect(() => {
-    if (overviews.length > 0) {
-      const dates = overviews.map((item) => toDate(item.date).getTime())
+    if (reviews.length > 0) {
+      const dates = reviews.map((item) => new Date(item.date).getTime())
       const newMaxDate = toDate(Math.max(...dates))
       setSelectedDates({
         from: subDays(newMaxDate, 30),
         to: newMaxDate,
       })
     }
-  }, [overviews])
+  }, [reviews])
 
   // Show loading state
   if (loading) {
@@ -124,39 +106,30 @@ export default function Overview() {
     )
   }
 
+  const latestMetrics = reviews.length > 0 ? reviews[reviews.length - 1] : null
+  const previousMetrics =
+    reviews.length > 1 ? reviews[reviews.length - 2] : null
+
   return (
     <>
-      <section aria-labelledby="review-metrics">
+      <section aria-labelledby="overview-metrics">
         <h1
-          id="review-metrics"
+          id="overview-metrics"
           className="scroll-mt-10 text-lg font-semibold text-gray-900 sm:text-xl dark:text-gray-50"
         >
-          Review metrics summary
+          Overview metrics summary
         </h1>
         <div className="mt-4 grid grid-cols-1 gap-14 sm:mt-8 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
           <ProgressBarCard
-            title="Average Satisfaction"
+            title="Average Rating"
             change={
-              overviews && overviews.length > 1
-                ? `${(
-                    Math.max(
-                      0,
-                      overviews[overviews.length - 1]["Payments completed"] ||
-                        0,
-                    ) /
-                      25 -
-                    Math.max(
-                      0,
-                      overviews[overviews.length - 2]["Payments completed"] ||
-                        0,
-                    ) /
-                      25
-                  ).toFixed(1)}`
+              latestMetrics && previousMetrics
+                ? `${(latestMetrics["Average rating"] - previousMetrics["Average rating"]).toFixed(1)}`
                 : "N/A"
             }
             value={
-              overviews && overviews.length > 0
-                ? `${Math.min(5, Math.max(0, (overviews[overviews.length - 1]["Payments completed"] || 0) / 25)).toFixed(1)}/5.0`
+              latestMetrics
+                ? `${latestMetrics["Average rating"].toFixed(1)}/5.0`
                 : "0/5.0"
             }
             valueDescription="average customer rating"
@@ -164,37 +137,12 @@ export default function Overview() {
             ctaText="View details"
             ctaLink="#"
             data={
-              overviews
+              latestMetrics
                 ? [
                     {
                       title: "Satisfaction Score",
-                      percentage:
-                        overviews.length > 0
-                          ? Math.min(
-                              100,
-                              Math.max(
-                                0,
-                                ((overviews[overviews.length - 1][
-                                  "Payments completed"
-                                ] || 0) /
-                                  25 /
-                                  5) *
-                                  100,
-                              ),
-                            )
-                          : 0,
-                      current:
-                        overviews.length > 0
-                          ? Math.min(
-                              5,
-                              Math.max(
-                                0,
-                                (overviews[overviews.length - 1][
-                                  "Payments completed"
-                                ] || 0) / 25,
-                              ),
-                            )
-                          : 0,
+                      percentage: (latestMetrics["Average rating"] / 5) * 100,
+                      current: latestMetrics["Average rating"],
                       allowed: 5,
                       unit: "★",
                     },
@@ -205,16 +153,13 @@ export default function Overview() {
           <ProgressBarCard
             title="Daily Reviews"
             change={
-              overviews && overviews.length > 1
-                ? `${Math.max(0, (overviews[overviews.length - 1]["Rows written"] || 0) - (overviews[overviews.length - 2]["Rows written"] || 0))}`
+              latestMetrics && previousMetrics
+                ? `${latestMetrics["Reviews submitted"] - previousMetrics["Reviews submitted"]}`
                 : "N/A"
             }
             value={
-              overviews && overviews.length > 0
-                ? Math.max(
-                    0,
-                    overviews[overviews.length - 1]["Rows written"] || 0,
-                  ).toString()
+              latestMetrics
+                ? latestMetrics["Reviews submitted"].toString()
                 : "0"
             }
             valueDescription="reviews submitted today"
@@ -222,45 +167,16 @@ export default function Overview() {
             ctaText="View trends"
             ctaLink="#"
             data={
-              overviews
+              latestMetrics && previousMetrics
                 ? [
                     {
                       title: "Reviews Today",
                       percentage:
-                        overviews.length > 0 && overviews.length > 1
-                          ? Math.min(
-                              100,
-                              Math.max(
-                                0,
-                                ((overviews[overviews.length - 1][
-                                  "Rows written"
-                                ] || 0) /
-                                  Math.max(
-                                    overviews[overviews.length - 2][
-                                      "Rows written"
-                                    ] || 0,
-                                    1,
-                                  )) *
-                                  100,
-                              ),
-                            )
-                          : 50,
-                      current:
-                        overviews.length > 0
-                          ? Math.max(
-                              0,
-                              overviews[overviews.length - 1]["Rows written"] ||
-                                0,
-                            )
-                          : 0,
-                      allowed:
-                        overviews.length > 1
-                          ? Math.max(
-                              overviews[overviews.length - 2]["Rows written"] ||
-                                0,
-                              1,
-                            )
-                          : 10,
+                        (latestMetrics["Reviews submitted"] /
+                          (previousMetrics["Reviews submitted"] || 1)) *
+                        100,
+                      current: latestMetrics["Reviews submitted"],
+                      allowed: previousMetrics["Reviews submitted"] || 1,
                       unit: "",
                     },
                   ]
@@ -270,51 +186,51 @@ export default function Overview() {
           <CategoryBarCard
             title="Review Activity"
             change={
-              overviews && overviews.length > 1
-                ? `${Math.max(0, (overviews[overviews.length - 1]["Sign ups"] || 0) - (overviews[overviews.length - 2]["Sign ups"] || 0))}`
+              latestMetrics && previousMetrics
+                ? `${latestMetrics["Reviews approved"] + latestMetrics["Reviews rejected"] - (previousMetrics["Reviews approved"] + previousMetrics["Reviews rejected"])}`
                 : "N/A"
             }
             value={
-              overviews && overviews.length > 0
-                ? Math.max(
-                    0,
-                    overviews[overviews.length - 1]["Sign ups"] || 0,
+              latestMetrics
+                ? (
+                    latestMetrics["Reviews approved"] +
+                    latestMetrics["Reviews rejected"]
                   ).toString()
                 : "0"
             }
-            valueDescription="new customers today"
+            valueDescription="reviews processed today"
             subtitle="Activity breakdown"
-            ctaDescription="Monitor customer engagement"
+            ctaDescription="Monitor review processing"
             ctaText="detailed analytics"
             ctaLink="#"
             data={
-              overviews && overviews.length > 0
+              latestMetrics
                 ? [
                     {
-                      title: "Reviews Submitted",
-                      percentage: (overviews[overviews.length - 1]["Rows written"] || 0) > 0 ? 60 : 0,
-                      value: Math.max(
-                        0,
-                        overviews[overviews.length - 1]["Rows written"] || 0,
-                      ).toString(),
-                      color: "bg-blue-600 dark:bg-blue-500",
-                    },
-                    {
-                      title: "New Customers",
-                      percentage: (overviews[overviews.length - 1]["Sign ups"] || 0) > 0 ? 25 : 0,
-                      value: Math.max(
-                        0,
-                        overviews[overviews.length - 1]["Sign ups"] || 0,
-                      ).toString(),
+                      title: "Approved",
+                      percentage:
+                        (latestMetrics["Reviews approved"] /
+                          (latestMetrics["Reviews submitted"] || 1)) *
+                        100,
+                      value: latestMetrics["Reviews approved"].toString(),
                       color: "bg-green-600 dark:bg-green-500",
                     },
                     {
-                      title: "Escalations",
-                      percentage: (overviews[overviews.length - 1]["Support calls"] || 0) > 0 ? 15 : 0,
-                      value: Math.max(
-                        0,
-                        overviews[overviews.length - 1]["Support calls"] || 0,
-                      ).toString(),
+                      title: "Pending",
+                      percentage:
+                        (latestMetrics["Reviews pending"] /
+                          (latestMetrics["Reviews submitted"] || 1)) *
+                        100,
+                      value: latestMetrics["Reviews pending"].toString(),
+                      color: "bg-yellow-500 dark:bg-yellow-400",
+                    },
+                    {
+                      title: "Rejected",
+                      percentage:
+                        (latestMetrics["Reviews rejected"] /
+                          (latestMetrics["Reviews submitted"] || 1)) *
+                        100,
+                      value: latestMetrics["Reviews rejected"].toString(),
                       color: "bg-red-600 dark:bg-red-500",
                     },
                   ]
@@ -323,88 +239,7 @@ export default function Overview() {
           />
         </div>
       </section>
-      <section aria-labelledby="current-billing-cycle">
-        <h1
-          id="current-billing-cycle"
-          className="mt-16 scroll-mt-8 text-lg font-semibold text-gray-900 sm:text-xl dark:text-gray-50"
-        >
-          Current Billing Cycle
-        </h1>
-        <div className="mt-4 grid grid-cols-1 gap-14 sm:mt-8 sm:grid-cols-2 lg:mt-10 xl:grid-cols-3">
-          <ProgressBarCard
-            title="Total Costs"
-            change={usage && usage.length > 1 ? 
-              `$${(usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) - usage.slice(-10, -5).reduce((acc, u) => acc + u.costs, 0)).toFixed(2)}` : 
-              "N/A"}
-            value={usage && usage.length > 0 ? 
-              `$${usage.slice(-5).reduce((acc, u) => acc + u.costs, 0).toFixed(2)}` : 
-              "$0.00"}
-            valueDescription="last 5 active projects"
-            ctaDescription="View detailed billing breakdown and cost analysis."
-            ctaText="View billing"
-            ctaLink="#"
-            data={usage ? [{
-              title: "Current Costs",
-              percentage: usage.length > 0 ? 
-                Math.min(100, Math.max(0, (usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) / 50000) * 100)) : 0,
-              current: usage.length > 0 ? usage.slice(-5).reduce((acc, u) => acc + u.costs, 0) : 0,
-              allowed: 50000,
-              unit: "$"
-            }] : []}
-          />
-          <ProgressBarCard
-            title="System Stability"
-            change={usage && usage.length > 1 ? 
-              `${(usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) - 
-                 usage.filter(u => u.status === 'archived').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'archived').length, 1)).toFixed(1)}%` : 
-              "N/A"}
-            value={usage && usage.length > 0 ? 
-              `${(usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1)).toFixed(1)}%` : 
-              "0%"}
-            valueDescription="average uptime across active systems"
-            ctaDescription="Monitor system health and performance metrics."
-            ctaText="View monitoring"
-            ctaLink="#"
-            data={usage ? [{
-              title: "Stability Score",
-              percentage: usage.length > 0 ? 
-                usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) : 0,
-              current: usage.length > 0 ? usage.filter(u => u.status === 'live').reduce((acc, u) => acc + u.stability, 0) / Math.max(usage.filter(u => u.status === 'live').length, 1) : 0,
-              allowed: 100,
-              unit: "%"
-            }] : []}
-          />
-          <DonutCard
-            title="Regional Distribution"
-            change={usage && usage.length > 1 ? 
-              `${usage.filter(u => u.status === 'live').length - usage.filter(u => u.status === 'archived').length}` : 
-              "N/A"}
-            value={usage && usage.length > 0 ? usage.filter(u => u.status === 'live').length.toString() : "0"}
-            valueDescription="active deployments"
-            subtitle="Distribution by region"
-            ctaDescription="Manage regional infrastructure deployments"
-            ctaText="view regions"
-            ctaLink="#"
-            data={usage && usage.length > 0 ? [
-              {
-                name: "US Regions",
-                value: usage.filter(u => u.region.startsWith('US') && u.status === 'live').length,
-                color: "blue"
-              },
-              {
-                name: "EU Regions", 
-                value: usage.filter(u => u.region.startsWith('EU') && u.status === 'live').length,
-                color: "green"
-              },
-              {
-                name: "Inactive",
-                value: usage.filter(u => u.status !== 'live').length,
-                color: "red"
-              }
-            ] : []}
-          />
-        </div>
-      </section>
+
       <section aria-labelledby="usage-overview">
         <h1
           id="usage-overview"
@@ -423,7 +258,7 @@ export default function Overview() {
             categories={categories}
             setSelectedCategories={setSelectedCategories}
             selectedCategories={selectedCategories}
-            overviewData={overviews || []}
+            overviewData={reviews.map((item) => ({ ...item, date: item.date }))}
           />
         </div>
         <dl
@@ -441,7 +276,10 @@ export default function Overview() {
                   type={category.type}
                   selectedDates={selectedDates}
                   selectedPeriod={selectedPeriod}
-                  overviewData={overviews}
+                  overviewData={reviews.map((item) => ({
+                    ...item,
+                    date: item.date,
+                  }))}
                 />
               )
             })}
