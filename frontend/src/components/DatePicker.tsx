@@ -16,7 +16,7 @@ import {
   type DateSegment,
 } from "@react-stately/datepicker"
 import { RiCalendar2Fill, RiSubtractFill } from "@remixicon/react"
-import { format, type Locale } from "date-fns"
+import { format, isValid, type Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
 import * as React from "react"
 import { tv, VariantProps } from "tailwind-variants"
@@ -411,8 +411,10 @@ const formatDate = (
     dateString = usesAmPm
       ? format(date, "dd MMM, yyyy h:mm a", { locale })
       : format(date, "dd MMM, yyyy HH:mm", { locale })
-  } else {
+  } else if (isValid(date)) {
     dateString = format(date, "dd MMM, yyyy", { locale })
+  } else {
+    dateString = "WEIIIIRD"
   }
 
   return dateString
@@ -1205,5 +1207,7 @@ DateRangePicker.displayName = "DateRangePicker"
 export {
   DatePicker,
   DateRangePicker,
-  type DatePreset, type DateRange, type DateRangePreset
+  type DatePreset,
+  type DateRange,
+  type DateRangePreset,
 }

@@ -21,19 +21,19 @@ export const roles: { value: string; label: string }[] = [
 
 export const statuses: { value: string; label: string; variant: string }[] = [
   {
-    value: "live",
-    label: "Live",
+    value: "approved",
+    label: "Approved",
     variant: "success",
   },
   {
-    value: "inactive",
-    label: "Inactive",
-    variant: "neutral",
+    value: "rejected",
+    label: "Rejected",
+    variant: "warning",
   },
   {
-    value: "archived",
-    label: "Archived",
-    variant: "warning",
+    value: "pending",
+    label: "Pending",
+    variant: "neutral",
   },
 ]
 

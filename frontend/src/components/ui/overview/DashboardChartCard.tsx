@@ -1,29 +1,36 @@
 import { PeriodValue } from "@/app/(main)/overview/page"
 import { Badge } from "@/components/Badge"
 import { LineChart } from "@/components/LineChart"
-import { OverviewData } from "@/data/schema"
 import { cx, formatters, percentageFormatter } from "@/lib/utils"
 import {
   eachDayOfInterval,
   formatDate,
   interval,
   isWithinInterval,
+  isValid,
+  subDays,
 } from "date-fns"
 import { DateRange } from "react-day-picker"
 import { getPeriod } from "./DashboardFilterbar"
 
+type ChartDataPoint = {
+  date: string
+  [key: string]: number | string
+}
+
 export type CardProps = {
-  title: keyof OverviewData
-  type: "currency" | "unit"
+  title: string
+  type: "currency" | "unit" | "rating"
   selectedDates: DateRange | undefined
   selectedPeriod: PeriodValue
-  overviewData: OverviewData[]
+  overviewData: ChartDataPoint[]
   isThumbnail?: boolean
 }
 
 const formattingMap = {
   currency: formatters.currency,
   unit: formatters.unit,
+  rating: (value: number) => (value ? value.toFixed(1) : "0.0"),
 }
 
 export const getBadgeType = (value: number) => {
@@ -48,25 +55,45 @@ export function ChartCard({
   isThumbnail,
 }: CardProps) {
   const formatter = formattingMap[type]
+
+  let effectiveSelectedDates = selectedDates
+  if (
+    !effectiveSelectedDates ||
+    !effectiveSelectedDates.from ||
+    !effectiveSelectedDates.to ||
+    !isValid(effectiveSelectedDates.from) ||
+    !isValid(effectiveSelectedDates.to)
+  ) {
+    const to = new Date()
+    const from = subDays(to, 30)
+    effectiveSelectedDates = { from, to }
+  }
+
   const selectedDatesInterval =
-    selectedDates?.from && selectedDates?.to
-      ? interval(selectedDates.from, selectedDates.to)
+    effectiveSelectedDates?.from && effectiveSelectedDates?.to
+      ? interval(effectiveSelectedDates.from, effectiveSelectedDates.to)
       : null
   const allDatesInInterval =
-    selectedDates?.from && selectedDates?.to
-      ? eachDayOfInterval(interval(selectedDates.from, selectedDates.to))
+    effectiveSelectedDates?.from && effectiveSelectedDates?.to
+      ? eachDayOfInterval(
+          interval(effectiveSelectedDates.from, effectiveSelectedDates.to),
+        )
       : null
-  const prevDates = getPeriod(selectedDates, selectedPeriod)
+  const prevDates = getPeriod(effectiveSelectedDates, selectedPeriod)
 
   const prevDatesInterval =
-    prevDates?.from && prevDates?.to
+    prevDates?.from &&
+    prevDates?.to &&
+    isValid(prevDates.from) &&
+    isValid(prevDates.to)
       ? interval(prevDates.from, prevDates.to)
       : null
 
   const data = overviewData
     .filter((overview) => {
       if (selectedDatesInterval) {
-        return isWithinInterval(overview.date, selectedDatesInterval)
+        const date = new Date(overview.date)
+        return isValid(date) && isWithinInterval(date, selectedDatesInterval)
       }
       return true
     })
@@ -75,7 +102,8 @@ export function ChartCard({
   const prevData = overviewData
     .filter((overview) => {
       if (prevDatesInterval) {
-        return isWithinInterval(overview.date, prevDatesInterval)
+        const date = new Date(overview.date)
+        return isValid(date) && isWithinInterval(date, prevDatesInterval)
       }
       return false
     })
@@ -95,7 +123,7 @@ export function ChartCard({
         value,
         previousDate: prevOverview?.date,
         previousFormattedDate: prevOverview
-          ? formatDate(prevOverview.date, "dd/MM/yyyy")
+          ? formatDate(new Date(prevOverview.date), "dd/MM/yyyy")
           : null,
         previousValue:
           selectedPeriod !== "no-comparison" ? previousValue : null,
