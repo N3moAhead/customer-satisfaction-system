@@ -25,13 +25,23 @@ import { PeriodValue } from "@/app/(main)/overview/page"
 import { Button } from "@/components/Button"
 import { Checkbox } from "@/components/Checkbox"
 import { DateRangePicker } from "@/components/DatePicker"
-import { OverviewData } from "@/data/schema"
 import { cx } from "@/lib/utils"
 import { RiSettings5Line } from "@remixicon/react"
-import { eachDayOfInterval, interval, subDays, subYears } from "date-fns"
+import {
+  eachDayOfInterval,
+  interval,
+  isValid,
+  subDays,
+  subYears,
+} from "date-fns"
 import React from "react"
 import { DateRange } from "react-day-picker"
 import { ChartCard } from "./DashboardChartCard"
+
+type ChartDataPoint = {
+  date: string
+  [key: string]: number | string
+}
 
 type Period = {
   value: PeriodValue
@@ -64,7 +74,7 @@ export const getPeriod = (
     case "previous-period":
       let previousPeriodFrom
       let previousPeriodTo
-      if (from && to) {
+      if (from && to && isValid(from) && isValid(to)) {
         const datesInterval = interval(from, to)
         const numberOfDaysBetween = eachDayOfInterval(datesInterval).length
         previousPeriodTo = subDays(from, 1)
@@ -74,10 +84,10 @@ export const getPeriod = (
     case "last-year":
       let lastYearFrom
       let lastYearTo
-      if (from) {
+      if (from && isValid(from)) {
         lastYearFrom = subYears(from, 1)
       }
-      if (to) {
+      if (to && isValid(to)) {
         lastYearTo = subYears(to, 1)
       }
       return { from: lastYearFrom, to: lastYearTo }
@@ -93,10 +103,10 @@ type FilterbarProps = {
   onDatesChange: (dates: DateRange | undefined) => void
   selectedPeriod: PeriodValue
   onPeriodChange: (period: PeriodValue) => void
-  categories: any[]
-  setSelectedCategories: any
-  selectedCategories: any
-  overviewData: OverviewData[]
+  categories: { title: string; type: "currency" | "unit" | "rating" }[]
+  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>
+  selectedCategories: string[]
+  overviewData: ChartDataPoint[]
 }
 
 export function Filterbar({
@@ -115,9 +125,9 @@ export function Filterbar({
     React.useState(selectedCategories)
 
   const handleCategoryChange = (category: string) => {
-    setTempSelectedCategories((prev: any) =>
+    setTempSelectedCategories((prev: string[]) =>
       prev.includes(category)
-        ? prev.filter((item: any) => item !== category)
+        ? prev.filter((item: string) => item !== category)
         : [...prev, category],
     )
   }

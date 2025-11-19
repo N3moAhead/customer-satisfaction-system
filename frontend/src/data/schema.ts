@@ -7,14 +7,26 @@ export type Usage = {
   lastEdited: string
 }
 
-export type OverviewData = {
+export type ReviewTimeseriesMetrics = {
   date: string
-  "Rows written": number
-  "Rows read": number
-  Queries: number
-  "Payments completed": number
-  "Sign ups": number
-  Logins: number
-  "Sign outs": number
-  "Support calls": number
+  "Reviews submitted": number
+  "Reviews approved": number
+  "Reviews pending": number
+  "Reviews rejected": number
+  "Average rating": number
+  "5-star reviews": number
+  "Customer interactions": number
+  "Support escalations": number
+}
+
+export type Review = {
+  id: string
+  customerId: string
+  customerName: string
+  rating: number
+  title: string
+  comment: string
+  status: "approved" | "pending" | "rejected"
+  createdAt: string
+  updatedAt: string
 }
