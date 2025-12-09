@@ -1,0 +1,53 @@
+direction: right
+grid-columns: 2
+
+Actors: {
+  *.icon: https://icons.terrastruct.com/essentials%2F359-users.svg
+  grid-columns: 1
+  # --- Actors ---
+  Marketplace Operator: {
+    tooltip: "The Business Client (e.g., Amazon)"
+  }
+
+  End User: {
+    tooltip: "The Customer writing/reading reviews"
+  }
+
+  Internal Moderator: {
+    tooltip: "RaaS Staff or Automated System"
+  }
+
+  Data Analyst: {
+    tooltip: "Internal or External BI User"
+  }
+}
+# --- System Boundary ---
+RaaS System: Use Cases {
+  style: {
+    stroke-dash: 3
+  }
+  grid-columns: 1
+
+  # --- Use Cases ---
+  Submit Review: {shape: oval}
+  Read Reviews: {shape: oval}
+  Moderate Content: {shape: oval}
+  Flag Inappropriate: {shape: oval}
+  Export Bulk Data: {shape: oval}
+  Administer Access: {shape: oval}
+}
+
+# --- Relationships ---
+Actors.End User -> RaaS System.Submit Review
+Actors.End User -> RaaS System.Flag Inappropriate
+Actors.End User -> RaaS System.Read Reviews
+
+# Operator integration
+Actors.Marketplace Operator -> RaaS System.Administer Access
+Actors.Marketplace Operator -> RaaS System.Read Reviews
+
+# Moderation flow
+Actors.Internal Moderator -> RaaS System.Moderate Content
+
+# BI flow
+Actors.Data Analyst -> RaaS System.Export Bulk Data

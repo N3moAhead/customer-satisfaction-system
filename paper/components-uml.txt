@@ -1,0 +1,104 @@
+direction: right
+
+# --- Entities ---
+Marketplace: {
+  shape: class
+  # Attributes
+  api_key: string
+  name: string
+  callback_url: string
+}
+
+Product: {
+  shape: class
+  external_id: string
+  name: string
+  category: string
+}
+
+Review: {
+  shape: class
+  rating: int
+  title: string
+  body: text
+  status: enum
+  created_at: timestamp
+}
+
+Author: {
+  shape: class
+  external_user_id: string
+  display_name: string
+}
+
+ModerationTicket: {
+  shape: class
+  reason: string
+  decision_notes: string
+  moderated_by: string
+}
+
+# --- Relationships ---
+
+# Marketplace contains/lists Products (1 to Many)
+Marketplace -> Product: Lists {
+  source-arrowhead: {
+    label: "1"
+    shape: diamond
+  }
+  target-arrowhead: {
+    label: "*"
+    shape: arrow
+  }
+}
+
+# Product has Reviews (1 to Many)
+Product -> Review: Has {
+  source-arrowhead: {
+    label: "1"
+    shape: diamond
+  }
+  target-arrowhead: {
+    label: "*"
+    shape: arrow
+  }
+}
+
+# Author writes Reviews (1 to Many)
+Author -> Review: Writes {
+  source-arrowhead: {
+    label: "1"
+    shape: none
+  }
+  target-arrowhead: {
+    label: "*"
+    shape: arrow
+  }
+}
+
+# Review has an optional Moderation Ticket (1 to 0..1)
+Review -> ModerationTicket: Has Audit Trail {
+  source-arrowhead: {
+    label: "1"
+    shape: none
+  }
+  target-arrowhead: {
+    label: "0..1"
+    shape: arrow
+  }
+}
+
+# --- Conceptual Explanations ---
+# Using D2 connections to explain logic without strict UML shapes
+Marketplace.name -> Product.external_id: "Namespaces products" {
+  style: {
+    stroke-dash: 3
+    opacity: 0.5
+  }
+}
+Review.status -> ModerationTicket.decision_notes: "Determines visibility" {
+  style: {
+    stroke-dash: 3
+    opacity: 0.5
+  }
+}

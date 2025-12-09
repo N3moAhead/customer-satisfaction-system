@@ -1,0 +1,46 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.9 Chrome/134.0.6998.205 Electron/35.4.0 Safari/537.36" version="27.0.9">
+  <diagram name="Page-1" id="YF4w-NyiWjjYEHWHVvCA">
+    <mxGraphModel dx="1004" dy="658" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5XRR30eWpeVSTPDmdM46-6" value="&lt;font face=&quot;FiraCode Nerd Font&quot;&gt;Backend&lt;/font&gt;&lt;div&gt;&lt;font face=&quot;FiraCode Nerd Font&quot;&gt;Server&lt;/font&gt;&lt;/div&gt;" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#777;shape=mxgraph.azure.server_rack;" parent="1" vertex="1">
+          <mxGeometry x="310" y="145" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-8" value="&lt;font face=&quot;FiraCode Nerd Font&quot;&gt;Analytics&lt;br&gt;Dashboard&lt;/font&gt;" style="sketch=0;pointerEvents=1;shadow=0;dashed=0;html=1;strokeColor=none;fillColor=#434445;aspect=fixed;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shape=mxgraph.vvd.web_browser;" parent="1" vertex="1">
+          <mxGeometry x="115.33" y="104.5" width="57.04" height="40.5" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-12" value="Dashboard&lt;div&gt;Read API&lt;/div&gt;" style="verticalLabelPosition=top;sketch=0;html=1;fillColor=#777;strokeColor=none;verticalAlign=bottom;pointerEvents=1;align=center;shape=mxgraph.cisco_safe.security_icons.icon19;labelPosition=center;fontFamily=FiraCode Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="230" y="136" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-13" value="Data Write&lt;br&gt;API" style="verticalLabelPosition=bottom;sketch=0;html=1;fillColor=#777;strokeColor=none;verticalAlign=top;pointerEvents=1;align=center;shape=mxgraph.cisco_safe.security_icons.icon19;fontFamily=FiraCode Nerd Font;" parent="1" vertex="1">
+          <mxGeometry x="230" y="174" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5XRR30eWpeVSTPDmdM46-12" target="5XRR30eWpeVSTPDmdM46-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5XRR30eWpeVSTPDmdM46-13" target="5XRR30eWpeVSTPDmdM46-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.533;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5XRR30eWpeVSTPDmdM46-8" target="5XRR30eWpeVSTPDmdM46-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-18" value="&lt;font face=&quot;FiraCode Nerd Font&quot;&gt;External&lt;br&gt;Data Sources&lt;/font&gt;" style="points=[];aspect=fixed;html=1;align=center;shadow=0;dashed=0;fillColor=#777;strokeColor=none;shape=mxgraph.alibaba_cloud.datahub;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="120" y="192.28" width="47.7" height="47.7" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.067;entryY=0.533;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5XRR30eWpeVSTPDmdM46-18" target="5XRR30eWpeVSTPDmdM46-13" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5XRR30eWpeVSTPDmdM46-6" target="5XRR30eWpeVSTPDmdM46-20" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="170" as="sourcePoint" />
+            <mxPoint x="440" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5XRR30eWpeVSTPDmdM46-20" value="&lt;font face=&quot;FiraCode Nerd Font&quot;&gt;Persistent&lt;br&gt;Data Store&lt;/font&gt;" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#777;shadow=0;dashed=0;shape=mxgraph.ios7.icons.data;" parent="1" vertex="1">
+          <mxGeometry x="399" y="147.73" width="30" height="44.55" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
